@@ -20,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
     public List<OrderDto> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map((order) -> mapToOrderDto(order)).collect(Collectors.toList());
+        return orders.stream().map(this::mapToOrderDto).collect(Collectors.toList());
     }
 
     @Override

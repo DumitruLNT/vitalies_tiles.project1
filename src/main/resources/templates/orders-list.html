@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th =  "http://thymeleaf.org"
+      xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
@@ -17,11 +17,15 @@
                 <p class="lead fw-normal text-muted mb-0">Company portfolio</p>
             </div>
             <div class="row gx-5">
-                <div th:each="order : ${orders}" class="col-lg-6">
-                    <div class="position-relative mb-5">
-                        <img class="img-fluid rounded-3 mb-3" th:src="${order.OrderPhotoUrl}" alt="..." />
-                        <a class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!"> <div th:text="${order.name}"></div> <div th:text="${order.price}"></div></a>
+                <div th:each="order : ${orders}" class="col-lg-6 mb-2">
+                    <div class="position-relative mb-3">
+                        <img class="img-fluid rounded-3 mb-3" th:src="${order.OrderPhotoUrl}" alt="..."/>
+                        <a class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">
+                            <div th:text="${order.name}"></div>
+                            <div th:text="${order.price}"></div>
+                        </a>
                     </div>
+<!--                    <a class="btn btn-primary" th:href="@{/orders/{orderId}/edit(orderId=${order.id})}"></a>-->
                 </div>
             </div>
         </div>

@@ -42,17 +42,17 @@ public class OrderController {
         return "redirect:/orders";
     }
 
-    @GetMapping("/orders/{orderId}/edit")
-    public String editOrders(@PathVariable("orderId") long orderId, Model model){
-        OrderDto orderDto = orderService.findById(orderId);
-        model.addAttribute("orderDto", orderDto);
-        return "orders-edit";
-    }
-
-    @PostMapping("orders/{orderId}/edit")
-    public String editOrders(@PathVariable("orderId") long orderId, @ModelAttribute("order") OrderDto order){
-        order.setId(orderId);
-        orderService.updateOrder(order);
-        return "redirect:/orders";
-    }
+//    @GetMapping("/orders/{id}/edit")
+//    public String editOrders(@PathVariable("id") long orderId, Model model){
+//        OrderDto orderDto = orderService.findById(orderId);
+//        model.addAttribute("orderDto", orderDto);
+//        return "orders-edit";
+//    }
+//
+//    @PostMapping("orders/{id}/edit")
+//    public String editOrders(@PathVariable("id") long orderId, @ModelAttribute("order") OrderDto order){
+//        order.setId(orderId);
+//        orderService.updateOrder(order);
+//        return "redirect:/orders";
+//    }
 }
