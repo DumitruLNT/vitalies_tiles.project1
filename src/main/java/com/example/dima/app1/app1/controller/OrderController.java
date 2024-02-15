@@ -1,19 +1,16 @@
 package com.example.dima.app1.app1.controller;
 
-import com.example.dima.app1.app1.dto.OrderDto;
 import com.example.dima.app1.app1.model.Order;
 import com.example.dima.app1.app1.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
     private OrderService orderService;
 
@@ -22,37 +19,44 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/orders")
-    public String listOfOrders(Model model){
-        List<OrderDto> orders = orderService.findAllOrders();
-        model.addAttribute("orders", orders);
-        return "orders-list";
+    @GetMapping()
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderService.findAllOrders();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @GetMapping("/orders/new")
-    public String createOrders(Model model){
-        Order order = new Order();
-        model.addAttribute("order", order);
-        return "order-create";
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable("id") Long id) {
+        Order order = orderService.findOrderById(id);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @PostMapping("/orders/new")
-    public String saveOrders(@ModelAttribute("order") Order order){
-        orderService.saveOrder(order);
-        return "redirect:/orders";
+    @PostMapping()
+    public ResponseEntity<Order> addOrder(@RequestBody Order order) {
+        Order newOrder = orderService.saveOrder(order);
+        return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/orders/{id}/edit")
-//    public String editOrders(@PathVariable("id") long orderId, Model model){
-//        OrderDto orderDto = orderService.findById(orderId);
-//        model.addAttribute("orderDto", orderDto);
-//        return "orders-edit";
-//    }
-//
-//    @PostMapping("orders/{id}/edit")
-//    public String editOrders(@PathVariable("id") long orderId, @ModelAttribute("order") OrderDto order){
-//        order.setId(orderId);
-//        orderService.updateOrder(order);
-//        return "redirect:/orders";
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order updatedOrder) {
+        Order existingOrder = orderService.findOrderById(id);
+
+        if(existingOrder == null) {
+            addOrder(updatedOrder);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+
+        existingOrder.setName(updatedOrder.getName());
+        existingOrder.setPrice(updatedOrder.getPrice());
+        existingOrder.setOrderPhotoUrl(updatedOrder.getOrderPhotoUrl());
+
+        updatedOrder = orderService.updateOrder(existingOrder);
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id){
+        orderService.deleteOrderById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -1,13 +1,11 @@
 package com.example.dima.app1.app1.service;
 
-import com.example.dima.app1.app1.dto.OrderDto;
 import com.example.dima.app1.app1.model.Order;
 import com.example.dima.app1.app1.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -18,9 +16,9 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public List<OrderDto> findAllOrders() {
+    public List<Order> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(this::mapToOrderDto).collect(Collectors.toList());
+        return orders;
     }
 
     @Override
@@ -29,31 +27,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findById(long orderId) {
+    public Order findOrderById(long orderId) {
         Order order = orderRepository.findById(orderId).get();
-        return mapToOrderDto(order);
+        return order;
     }
 
     @Override
-    public void updateOrder(OrderDto orderDto) {
-        orderRepository.save(mapToOrder(orderDto));
+    public Order updateOrder(Order order) {
+        return orderRepository.save(order);
     }
 
-    public OrderDto mapToOrderDto(Order order) {
-        return OrderDto.builder()
-                .id(order.getId())
-                .price(order.getPrice())
-                .name(order.getName())
-                .orderPhotoUrl(order.getOrderPhotoUrl())
-                .build();
-    }
-
-    private Order mapToOrder(OrderDto orderDto) {
-        return Order.builder()
-                .id(orderDto.getId())
-                .name(orderDto.getName())
-                .price(orderDto.getPrice())
-                .orderPhotoUrl(orderDto.getOrderPhotoUrl())
-                .build();
+    @Override
+    public Order deleteOrderById(Long id) {
+        orderRepository.deleteById(id);
+        return null;
     }
 }
